@@ -37,32 +37,45 @@ bool Task::configureHook()
         return false;
 
     std::string urdf_file = _urdf_file.get();
-    LOG_INFO("Configuring with URDF file %s", urdf_file.c_str());
-    calc.load_robot_model(urdf_file);
+    LOG_ERROR("Configuring with URDF file %s", urdf_file.c_str());
+    try{
+        calc.load_robot_model(urdf_file);
+    }
+    catch(std::runtime_error ex){
+        LOG_ERROR("Exception while initializing from urdf file: ", urdf_file.c_str());
+        throw(ex);
+    }
     LOG_DEBUG("Robot model loaded");
+
+    output_static_transforms_ = _output_static_transforms.get();
+
 
     std::string j_name;
     std::string seg_name;
     std::string parent_seg_name;
-    std::vector<std::string> joint_names = calc.get_all_joint_names();
+    if(output_static_transforms_)
+        joint_names_ = calc.get_all_joint_names();
+    else
+        joint_names_ = calc.get_moving_joint_names();
+
     std::stringstream ss;
-    for(uint i=0; i<joint_names.size(); i++){
-        ss << joint_names[i] << " ";
+    for(uint i=0; i<joint_names_.size(); i++){
+        ss << joint_names_[i] << " ";
     }
     LOG_INFO("The following joint names where found in URDF: %s",ss.str().c_str());
     ss.str("");
 
     LOG_INFO("Creating output ports..");
-    for(uint i=0; i<joint_names.size(); i++){
-        j_name = joint_names[i];
+    for(uint i=0; i<joint_names_.size(); i++){
+        j_name = joint_names_[i];
         seg_name = calc.get_segment_name_from_joint_name(j_name);
         parent_seg_name = calc.get_parent_name_by_segment_name(seg_name);
 
         LOG_INFO("Adding transformation output port for joint %s. It transforms %s -> %s",
                  j_name.c_str(), parent_seg_name.c_str(), seg_name.c_str());
         RTT::OutputPort<base::samples::RigidBodyState>* output_port =
-                new RTT::OutputPort<base::samples::RigidBodyState>(joint_names[i]);
-        ports()->addPort(joint_names[i], *output_port);
+                new RTT::OutputPort<base::samples::RigidBodyState>(joint_names_[i]);
+        ports()->addPort(joint_names_[i], *output_port);
         out_ports[j_name] = output_port;
 
         /*
@@ -93,24 +106,26 @@ void Task::updateHook()
     TaskBase::updateHook();
 
     base::samples::Joints joints;
-    base::samples::RigidBodyState transform;
-    bool success=true;
     while (_input.read(joints, false) == RTT::NewData){
         calc.update(joints);
-        for(uint i=0; i<joints.size(); i++){
-            success = calc.get_transform_by_joint_name(joints.names[i], transform);
-            if(success){
-                OutputPortMap::iterator it = out_ports.find(joints.names[i]);
+    }
 
-                //This should never be triggered
-                assert(it != out_ports.end());
 
-                //Write output
-                it->second->write(transform);
-            }
-            else{
-                LOG_INFO("Could not get transform for joint %s.", joints.names[i].c_str());
-            }
+    base::samples::RigidBodyState transform;
+    bool success=true;
+    for(uint i=0; i<joint_names_.size(); i++){
+        success = calc.get_transform_by_joint_name(joint_names_[i], transform);
+        if(success){
+            OutputPortMap::iterator it = out_ports.find(joint_names_[i]);
+
+            //This should never be triggered
+            assert(it != out_ports.end());
+
+            //Write output
+            it->second->write(transform);
+        }
+        else{
+            LOG_INFO("Could not get transform for joint %s.", joints.names[i].c_str());
         }
     }
 }

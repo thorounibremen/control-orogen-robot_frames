@@ -15,6 +15,9 @@ class Task : public TaskBase
 protected:
     OutputPortMap out_ports;
     TransformationCalculator calc;
+    bool output_static_transforms_;
+    std::vector<base::samples::RigidBodyState> transforms_;
+    std::vector<std::string> joint_names_;
 
 
 public:
