@@ -39,7 +39,7 @@ bool Task::configureHook()
     std::string urdf_file = _urdf_file.get();
     LOG_ERROR("Configuring with URDF file %s", urdf_file.c_str());
     try{
-        calc.load_robot_model(urdf_file);
+        calc.load_robot_model(urdf_file, _init_invalid.get());
     }
     catch(std::runtime_error ex){
         LOG_ERROR("Exception while initializing from urdf file: ", urdf_file.c_str());

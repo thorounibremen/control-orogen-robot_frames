@@ -1,20 +1,39 @@
 name "robot_frames"
 using_library "robot_frames"
 
-#import_types_from "robot_frame_transformations/CustomType.hpp"
+import_types_from "robot_framesTypes.hpp"
 
 import_types_from "base"
+#import_types_from "transformer"
 
 task_context "Task" do
     needs_configuration
 
     property "urdf_file", "/std/string"
     property "output_static_transforms", "bool", true
+    property "init_invalid", "bool", false
 
     input_port "input", "/base/samples/Joints"
 
     dynamic_output_port /\w/, "base/samples/RigidBodyState"
 
     port_driven 'input'
+end
+
+task_context "ChainPublisher" do
+    needs_configuration
+    
+    property "chains", "std/vector<robot_frames/Chain"
+    property "urdf_file", "std/string"
+    
+    input_port "input", "/base/samples/Joints"
+    dynamic_output_port /\w/, "base/samples/RigidBodyState"
+    
+    port_driven 'input'
+
+#    transformer do
+        #align_port 'input', 0
+        #max_latency 0.5
+#    end
 end
 
