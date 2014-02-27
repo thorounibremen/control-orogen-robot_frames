@@ -45,6 +45,7 @@ void ChainPublisher::clear_and_resize_vectors()
     involved_active_joints_.resize(n_defined_chains_);
 
     for(size_t i=0; i<out_ports_.size(); i++){
+        ports()->removePort(out_ports_[i]->getName());
         delete out_ports_[i];
     }
     out_ports_.clear();
@@ -184,6 +185,7 @@ void ChainPublisher::updateHook()
 
             //Convert and write to port
             convert(kdl_frames_[i], bt_frames_[i]);
+            bt_frames_[i].time = joint_state_.time;
             out_ports_[i]->write(bt_frames_[i]);
         }
     }

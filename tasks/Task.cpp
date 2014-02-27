@@ -19,8 +19,8 @@ Task::Task(std::string const& name, RTT::ExecutionEngine* engine)
 Task::~Task()
 {
     // Delete dynamic ports
-    for(OutputPortMap::iterator it=out_ports.begin();
-        it!=out_ports.end(); ++it){
+    for(OutputPortMap::iterator it=out_ports.begin(); it!=out_ports.end(); ++it){
+        ports()->removePort(it->second->getName());
         delete it->second;
     }
 }
