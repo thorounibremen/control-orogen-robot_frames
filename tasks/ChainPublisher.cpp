@@ -65,7 +65,7 @@ bool ChainPublisher::unpack_joints(const base::samples::Joints& joint_state,
             joint_array(i) = js.position;
         }
         catch(base::samples::Joints::InvalidName ex){
-            LOG_ERROR("Could not find joint %s in joint state vector.");
+            LOG_ERROR("Could not find joint %s in joint state vector.", involved_joints[i].c_str());
             ok = false;
         }
     }
