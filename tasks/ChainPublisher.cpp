@@ -137,8 +137,8 @@ bool ChainPublisher::configureHook()
 
         //Prepare frames storage
         base::samples::RigidBodyState rbs;
-        rbs.sourceFrame = chain_definitions[i].root_link;
-        rbs.targetFrame = chain_definitions[i].tip_link;
+        rbs.sourceFrame = chain_definitions[i].tip_link;
+        rbs.targetFrame = chain_definitions[i].root_link;
         rbs.invalidate();
         bt_frames_[i] = rbs;
 
