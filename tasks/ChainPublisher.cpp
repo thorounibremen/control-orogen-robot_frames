@@ -134,6 +134,7 @@ bool ChainPublisher::configureHook()
         }
         //Resize joint arrays
         joint_arrays_[i].resize(involved_active_joints_[i].size());
+        joint_arrays_[i].data.setZero();
 
         //Prepare frames storage
         base::samples::RigidBodyState rbs;
@@ -175,7 +176,8 @@ void ChainPublisher::updateHook()
             KDL::ChainFkSolverPos_recursive* solver = pos_solvers_[i];
 
             //Extract joint array for chain
-            unpack_joints(joint_state_, involved_active_joints_[i], joint_arrays_[i]);
+            if(!unpack_joints(joint_state_, involved_active_joints_[i], joint_arrays_[i]))
+                throw std::runtime_error("Unable to correctly unpack joint values on kinematic chain");
 
             //Calculate
             st = solver->JntToCart(joint_arrays_[i], kdl_frames_[i]);
