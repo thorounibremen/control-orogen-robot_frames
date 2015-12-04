@@ -20,20 +20,30 @@ task_context "Task" do
     port_driven 'input'
 end
 
+task_context "ChainPublisherBaseTask" do
+    needs_configuration
+
+    property "urdf_file", "std/string"
+
+    input_port "input", "/base/samples/Joints"
+
+    port_driven 'input'
+end
+
 task_context "ChainPublisher" do
+    subclasses "ChainPublisherBaseTask"
     needs_configuration
     
     property "chains", "std/vector<robot_frames/Chain"
-    property "urdf_file", "std/string"
     
-    input_port "input", "/base/samples/Joints"
     dynamic_output_port /\w/, "base/samples/RigidBodyState"
-    
-    port_driven 'input'
+end
 
-#    transformer do
-        #align_port 'input', 0
-        #max_latency 0.5
-#    end
+task_context "SingleChainPublisher" do
+    subclasses "ChainPublisherBaseTask"
+    needs_configuration
+
+    property "chain", "/robot_frames/Chain"
+    output_port "tip_frame", "base/samples/RigidBodyState"
 end
 
