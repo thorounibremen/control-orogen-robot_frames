@@ -25,7 +25,7 @@ bool SingleChainPublisher::configureHook()
     if (! SingleChainPublisherBase::configureHook())
         return false;
 
-    out_ports_.push_back(&_tip_frame);
+    out_ports_[0] = &_tip_frame;
 
     return true;
 }
