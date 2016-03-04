@@ -103,7 +103,16 @@ bool ChainPublisher::configureHook()
     //Receive Chains from urdf
     for(size_t i=0; i<n_defined_chains_; i++){
         std::string root = chain_definitions[i].root_link;
+
+        //By entering '__base__' as root or tip link, one could refer to the actual base-link of the robot model
+        if(root == "__base__"){
+            root = tree_.getRootSegment()->first;
+        }
         std::string tip = chain_definitions[i].tip_link;
+        if(tip == "__base__"){
+            tip = tree_.getRootSegment()->first;
+        }
+
         std::string name = chain_definitions[i].name;
 
         st = tree_.getChain(root, tip, chains_[i]);

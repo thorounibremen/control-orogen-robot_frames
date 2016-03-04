@@ -23,17 +23,13 @@ end
 task_context "ChainPublisher" do
     needs_configuration
     
-    property "chains", "std/vector<robot_frames/Chain"
+    #By entering '__base__' as root or tip link, one could refer to the actual base-link of the robot model
+    property "chains", "std/vector<robot_frames/Chain>"
     property "urdf_file", "std/string"
     
     input_port "input", "/base/samples/Joints"
     dynamic_output_port /\w/, "base/samples/RigidBodyState"
     
     port_driven 'input'
-
-#    transformer do
-        #align_port 'input', 0
-        #max_latency 0.5
-#    end
 end
 
