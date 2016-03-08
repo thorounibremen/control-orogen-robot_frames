@@ -147,8 +147,18 @@ bool ChainPublisher::configureHook()
 
         //Prepare frames storage
         base::samples::RigidBodyState rbs;
-        rbs.sourceFrame = chain_definitions[i].tip_link;
-        rbs.targetFrame = chain_definitions[i].root_link;
+        if(chain_definitions[i].tip_link_renamed == ""){
+            rbs.sourceFrame = chain_definitions[i].tip_link;
+        }
+        else{
+            rbs.sourceFrame = chain_definitions[i].tip_link_renamed;
+        }
+        if(chain_definitions[i].root_link_renamed == ""){
+            rbs.targetFrame = chain_definitions[i].root_link;
+        }
+        else{
+            rbs.targetFrame = chain_definitions[i].root_link_renamed;
+        }
         rbs.invalidate();
         bt_frames_[i] = rbs;
 
