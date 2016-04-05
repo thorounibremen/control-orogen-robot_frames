@@ -127,7 +127,7 @@ void Task::updateHook()
             it->second->write(transform);
         }
         else{
-            LOG_INFO("Could not get transform for joint %s.", joints.names[i].c_str());
+            LOG_INFO("Could not get transform for joint %s.", joint_names_[i].c_str());
         }
     }
 }
