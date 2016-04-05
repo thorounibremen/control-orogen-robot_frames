@@ -13,6 +13,8 @@ task_context "Task" do
     property "output_static_transforms", "bool", true
     property "init_invalid", "bool", false
 
+    property "output_only_valid", "bool", false
+
     input_port "input", "/base/samples/Joints"
 
     dynamic_output_port /\w/, "base/samples/RigidBodyState"

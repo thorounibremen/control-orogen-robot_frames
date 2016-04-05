@@ -35,6 +35,8 @@ bool Task::configureHook()
 {
     if (! TaskBase::configureHook())
         return false;
+    
+    calc.output_only_valid(_output_only_valid.get());
 
     std::string urdf_file = _urdf_file.get();
     LOG_ERROR("Configuring with URDF file %s", urdf_file.c_str());
