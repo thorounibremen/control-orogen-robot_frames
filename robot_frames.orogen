@@ -19,6 +19,8 @@ task_context "Task" do
 
     dynamic_output_port /\w/, "base/samples/RigidBodyState"
 
+    output_port "output_transforms", "std/vector<base/samples/RigidBodyState"
+
     port_driven 'input'
 end
 

@@ -60,6 +60,8 @@ bool Task::configureHook()
     else
         joint_names_ = calc.get_moving_joint_names();
 
+    transforms_.resize(joint_names_.size());
+
     std::stringstream ss;
     for(uint i=0; i<joint_names_.size(); i++){
         ss << joint_names_[i] << " ";
@@ -125,11 +127,14 @@ void Task::updateHook()
 
             //Write output
             it->second->write(transform);
+
+            transforms_[i] = transform;
         }
         else{
             LOG_INFO("Could not get transform for joint %s.", joint_names_[i].c_str());
         }
     }
+    _output_transforms.write(transforms_);
 }
 
 
