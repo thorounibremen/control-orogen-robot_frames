@@ -39,7 +39,7 @@ bool Task::configureHook()
     calc.output_only_valid(_output_only_valid.get());
 
     std::string urdf_file = _urdf_file.get();
-    LOG_ERROR("Configuring with URDF file %s", urdf_file.c_str());
+    LOG_DEBUG("Configuring with URDF file %s", urdf_file.c_str());
     try{
         calc.load_robot_model(urdf_file, _init_invalid.get());
     }
@@ -126,13 +126,14 @@ void Task::updateHook()
             assert(it != out_ports.end());
 
             //Write output
+            transform.time = base::Time::now();
             it->second->write(transform);
 
             transforms_[i] = transform;
         }
         else{
             LOG_INFO("Could not get transform for joint %s.", joint_names_[i].c_str());
-        }
+        };
     }
     _output_transforms.write(transforms_);
 }
