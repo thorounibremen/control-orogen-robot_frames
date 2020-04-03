@@ -126,7 +126,7 @@ void Task::updateHook()
             assert(it != out_ports.end());
 
             //Write output
-            transform.time = base::Time::now();
+            transform.time = joints.time;
             it->second->write(transform);
 
             transforms_[i] = transform;
