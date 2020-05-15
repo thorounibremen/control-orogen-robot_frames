@@ -125,10 +125,10 @@ void Task::updateHook()
             //This should never be triggered
             assert(it != out_ports.end());
 
-            //Write output
-            transform.time = joints.time;
+            //Write single output
             it->second->write(transform);
 
+            //Write multi output
             transforms_[i] = transform;
         }
         else{
