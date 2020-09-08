@@ -206,7 +206,7 @@ void ChainPublisher::updateHook()
 
             //Convert and write to port
             convert(kdl_frames_[i], bt_frames_[i]);
-            bt_frames_[i].time = joint_state_.time;
+            bt_frames_[i].time = base::Time::now(); //joint_state_.time;
             out_ports_[i]->write(bt_frames_[i]);
         }
     }
